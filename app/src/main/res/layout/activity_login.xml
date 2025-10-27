@@ -105,7 +105,7 @@
         android:stateListAnimator="@animator/raise_on_press"
         android:text="Login"
         android:translationZ="4dp"
-        app:backgroundTint="#020202"
+        app:backgroundTint="#202224"
         app:cornerRadius="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

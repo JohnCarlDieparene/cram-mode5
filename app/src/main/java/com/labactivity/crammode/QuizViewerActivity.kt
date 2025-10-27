@@ -61,6 +61,12 @@ class QuizViewerActivity : AppCompatActivity() {
         btnNext = findViewById(R.id.btnNext)
         btnPrevious = findViewById(R.id.btnPrevious)
 
+        val btnBack = findViewById<ImageButton>(R.id.btnBack)
+        btnBack.setOnClickListener {
+            finish()
+        }
+
+
         // --- Get intent data ---
         intent.getParcelableArrayListExtra<QuizQuestion>("quizQuestions")?.let {
             quizList = ArrayList(it)

@@ -481,7 +481,7 @@ class OCRActivity : AppCompatActivity() {
 
         when (currentMode) {
             Mode.SUMMARIZE -> {
-                btnSummarize.text = "✨ Summarize Text"
+                btnSummarize.text = "Summarize Text"
                 layoutSummaryOptions.visibility = View.VISIBLE
                 layoutFlashcardCount.visibility = View.GONE
                 labelResult.visibility = View.VISIBLE
@@ -495,7 +495,7 @@ class OCRActivity : AppCompatActivity() {
             }
 
             Mode.FLASHCARDS -> {
-                btnSummarize.text = "🧠 Generate Flashcards"
+                btnSummarize.text = "Generate Flashcards"
                 layoutSummaryOptions.visibility = View.GONE
                 layoutFlashcardCount.visibility = View.VISIBLE
                 labelResult.visibility = View.GONE
@@ -508,7 +508,7 @@ class OCRActivity : AppCompatActivity() {
             }
 
             Mode.QUIZ -> {
-                btnSummarize.text = "📝 Generate Quiz"
+                btnSummarize.text = "Generate Quiz"
                 layoutSummaryOptions.visibility = View.GONE
                 layoutFlashcardCount.visibility = View.GONE
                 labelResult.visibility = View.GONE

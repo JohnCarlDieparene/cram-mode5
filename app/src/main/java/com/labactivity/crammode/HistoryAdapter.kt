@@ -27,6 +27,8 @@ class HistoryAdapter(
         val btnDelete: ImageButton = itemView.findViewById(R.id.btnDelete)
     }
 
+    
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HistoryViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_study_history, parent, false)
@@ -46,12 +48,14 @@ class HistoryAdapter(
                 holder.txtPreview.text =
                     item.resultText.take(120) + if (item.resultText.length > 120) "..." else ""
             }
+
             "flashcards" -> {
                 holder.txtType.text = "Flashcards"
                 holder.icon.setImageResource(R.drawable.ic_flashcards) // ✅ flashcards icon
                 val flashcards = FlashcardUtils.parseFlashcards(item.resultText)
                 holder.txtPreview.text = "Flashcards: ${flashcards.size} cards"
             }
+
             "quiz" -> {
                 holder.txtType.text = "Quiz"
                 holder.icon.setImageResource(R.drawable.ic_quiz) // ✅ quiz icon
@@ -71,12 +75,14 @@ class HistoryAdapter(
                         .setPositiveButton("Close", null)
                         .show()
                 }
+
                 "flashcards" -> {
                     val flashcards = FlashcardUtils.parseFlashcards(item.resultText)
                     val intent = Intent(context, FlashcardViewerActivity::class.java)
                     intent.putExtra("flashcards", ArrayList(flashcards))
                     context.startActivity(intent)
                 }
+
                 "quiz" -> {
                     val intent = Intent(context, QuizViewerActivity::class.java)
                     intent.putParcelableArrayListExtra("quizQuestions", ArrayList(item.quiz))

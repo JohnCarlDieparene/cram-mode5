@@ -19,12 +19,19 @@ class HistoryActivity : AppCompatActivity() {
     private lateinit var historyAdapter: HistoryAdapter
     private var historyList = mutableListOf<StudyHistory>()
 
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityHistoryBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        binding.btnBack.setOnClickListener {
+            finish() // Close activity and return to previous screen
+        }
+
         binding.recyclerHistory.layoutManager = LinearLayoutManager(this)
+
 
         val currentUser = auth.currentUser
         if (currentUser == null) {
@@ -98,4 +105,5 @@ class HistoryActivity : AppCompatActivity() {
                 Toast.makeText(this, "Failed to delete: ${e.message}", Toast.LENGTH_SHORT).show()
             }
     }
+
 }

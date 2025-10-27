@@ -3,160 +3,273 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
-    android:fillViewport="true">
+    android:background="#191C1E"
+    android:fillViewport="true"
+    android:paddingTop="50dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <!-- Score + Timer Row -->
+        <!-- Header with Back Button -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="#202224"
+            android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:padding="16dp">
+
+            <ImageButton
+                android:id="@+id/btnBack"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Back"
+                android:padding="12dp"
+                android:src="@drawable/ic_arrow_back"
+                app:tint="#fcf0d1" />
 
             <TextView
-                android:id="@+id/txtScore"
                 android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
                 android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:text="Score: 0"
-                android:textSize="16sp"
+                android:fontFamily="@font/poppins_bold"
+                android:text="🧠 Quiz Mode"
+                android:textColor="#fcf0d1"
+                android:textSize="24sp"
                 android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/txtTimer"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Time left: 15s"
-                android:textSize="16sp"
-                android:textColor="@android:color/holo_red_dark" />
         </LinearLayout>
 
-        <!-- Progress Bar -->
-        <ProgressBar
-            android:id="@+id/progressBar"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="match_parent"
-            android:layout_height="8dp"
-            android:max="100"
-            android:progress="0"
-            android:layout_marginTop="8dp"
-            android:progressTint="@android:color/holo_blue_dark" />
-
-        <!-- Question Card -->
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="4dp"
-            android:padding="16dp">
-
-            <TextView
-                android:id="@+id/txtQuestion"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Question goes here"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-        </androidx.cardview.widget.CardView>
-
-        <!-- Choices Card -->
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="4dp"
-            android:padding="16dp">
-
-            <RadioGroup
-                android:id="@+id/radioGroup"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <RadioButton
-                    android:id="@+id/optionA"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:buttonTint="@android:color/holo_blue_dark"
-                    android:text="Option A" />
-
-                <RadioButton
-                    android:id="@+id/optionB"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:buttonTint="@android:color/holo_blue_dark"
-                    android:text="Option B" />
-
-                <RadioButton
-                    android:id="@+id/optionC"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:buttonTint="@android:color/holo_blue_dark"
-                    android:text="Option C" />
-
-                <RadioButton
-                    android:id="@+id/optionD"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:buttonTint="@android:color/holo_blue_dark"
-                    android:text="Option D" />
-            </RadioGroup>
-        </androidx.cardview.widget.CardView>
-
-        <!-- Feedback -->
-        <TextView
-            android:id="@+id/txtFeedback"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text=""
-            android:textSize="16sp"
-            android:textStyle="italic"
-            android:layout_marginTop="12dp"
-            android:textColor="@android:color/black" />
-
-        <!-- Buttons -->
+        <!-- Content Area -->
         <LinearLayout
-            android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="end"
-            android:layout_marginTop="16dp">
+            android:orientation="vertical"
+            android:padding="16dp">
 
-
-            <Button
-                android:id="@+id/btnPrevious"
-                android:layout_width="wrap_content"
+            <!-- Score + Timer Card -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Previous"
-                android:backgroundTint="@android:color/darker_gray"
-                android:textColor="@android:color/white"
-                android:layout_marginEnd="12dp"
-                android:visibility="gone" />
+                android:layout_marginBottom="16dp"
+                android:backgroundTint="#FCF5FDFF"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp">
 
-            <Button
-                android:id="@+id/btnSubmit"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Submit"
-                android:backgroundTint="@android:color/holo_blue_dark"
-                android:textColor="@android:color/white" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="16dp"
+                    android:gravity="center_vertical">
 
-            <Button
-                android:id="@+id/btnNext"
-                android:layout_width="wrap_content"
+                    <TextView
+                        android:id="@+id/txtScore"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/poppins_bold"
+                        android:text="Score: 0"
+                        android:textColor="#202224"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/txtTimer"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins_bold"
+                        android:text="⏱ 15s"
+                        android:textColor="#E53935"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Progress Bar -->
+            <ProgressBar
+                android:id="@+id/progressBar"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="8dp"
+                android:layout_marginBottom="16dp"
+                android:max="100"
+                android:progress="0"
+                android:progressTint="#fcf0d1"
+                android:progressBackgroundTint="#202224" />
+
+            <!-- Question Card -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Next"
-                android:backgroundTint="@android:color/holo_green_dark"
-                android:textColor="@android:color/white"
-                android:layout_marginStart="12dp"
-                android:visibility="gone" />
+                android:layout_marginBottom="16dp"
+                android:backgroundTint="#FCF5FDFF"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="❓ Question"
+                        android:textSize="14sp"
+                        android:textColor="#757575"
+                        android:fontFamily="@font/poppins"
+                        android:layout_marginBottom="8dp" />
+
+                    <TextView
+                        android:id="@+id/txtQuestion"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Question goes here"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="#202224"
+                        android:fontFamily="@font/poppins_bold"
+                        android:lineSpacingExtra="4dp" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Choices Card -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:backgroundTint="#FCF5FDFF"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Choose your answer"
+                        android:textSize="16sp"
+                        android:textColor="#757575"
+                        android:fontFamily="@font/poppins"
+                        android:layout_marginBottom="12dp" />
+
+                    <RadioGroup
+                        android:id="@+id/radioGroup"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <RadioButton
+                            android:id="@+id/optionA"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:buttonTint="#fcf0d1"
+                            android:text="Option A"
+                            android:textSize="16sp"
+                            android:textColor="#202224"
+                            android:fontFamily="@font/poppins"
+                            android:padding="12dp"
+                            android:layout_marginBottom="8dp" />
+
+                        <RadioButton
+                            android:id="@+id/optionB"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:buttonTint="#fcf0d1"
+                            android:text="Option B"
+                            android:textSize="16sp"
+                            android:textColor="#202224"
+                            android:fontFamily="@font/poppins"
+                            android:padding="12dp"
+                            android:layout_marginBottom="8dp" />
+
+                        <RadioButton
+                            android:id="@+id/optionC"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:buttonTint="#fcf0d1"
+                            android:text="Option C"
+                            android:textSize="16sp"
+                            android:textColor="#202224"
+                            android:fontFamily="@font/poppins"
+                            android:padding="12dp"
+                            android:layout_marginBottom="8dp" />
+
+                        <RadioButton
+                            android:id="@+id/optionD"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:buttonTint="#fcf0d1"
+                            android:text="Option D"
+                            android:textSize="16sp"
+                            android:textColor="#202224"
+                            android:fontFamily="@font/poppins"
+                            android:padding="12dp" />
+                    </RadioGroup>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+
+
+            <!-- Feedback -->
+            <TextView
+                android:id="@+id/txtFeedback"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:fontFamily="@font/poppins"
+                android:text=""
+                android:textColor="@android:color/black"
+                android:textSize="16sp"
+                android:textStyle="italic" />
+
+            <!-- Buttons -->
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:layout_marginTop="16dp">
+
+
+                <Button
+                    android:id="@+id/btnPrevious"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Previous"
+                    android:backgroundTint="@android:color/darker_gray"
+                    android:textColor="@android:color/white"
+                    android:layout_marginEnd="12dp"
+                    android:visibility="gone" />
+
+                <Button
+                    android:id="@+id/btnSubmit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@android:color/background_light"
+                    android:text="Submit"
+                    android:textColor="@android:color/black" />
+
+                <Button
+                    android:id="@+id/btnNext"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Next"
+                    android:backgroundTint="@android:color/holo_green_dark"
+                    android:textColor="@android:color/white"
+                    android:layout_marginStart="12dp"
+                    android:visibility="gone" />
+            </LinearLayout>
+
         </LinearLayout>
 
     </LinearLayout>

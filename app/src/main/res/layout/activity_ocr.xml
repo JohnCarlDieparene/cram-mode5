@@ -4,72 +4,531 @@
     android:id="@+id/nestedScrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FAFAFA"
-    android:fillViewport="true"
-    android:padding="16dp">
+    android:background="#191C1E"
+    android:fillViewport="true">
 
     <LinearLayout
         android:id="@+id/rootLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:divider="?android:dividerHorizontal"
-        android:showDividers="middle"
-        android:dividerPadding="8dp">
+        android:orientation="vertical">
+
+        <!-- Header -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingTop="50dp"
+            android:paddingBottom="20dp">
+
+            <ImageView
+                android:id="@+id/logoImage"
+                android:layout_width="55dp"
+                android:layout_height="55dp"
+                android:layout_marginEnd="8dp"
+                android:contentDescription="App Logo"
+                android:src="@drawable/logo" />
+
+            <TextView
+                android:id="@+id/titleText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins"
+                android:shadowColor="#fcf0d1"
+                android:shadowDx="2"
+                android:shadowDy="2"
+                android:shadowRadius="3"
+                android:text="Cram Mode"
+                android:textColor="#fcf0d1"
+                android:textSize="28sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+
 
         <!-- 📷 Image + File Input Buttons -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:gravity="center"
-            android:layout_marginBottom="16dp"
+            android:orientation="horizontal"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
             android:weightSum="3">
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnTakePhoto"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            <androidx.cardview.widget.CardView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
                 android:layout_weight="1"
-                android:text="📷 Camera"
-                app:iconPadding="8dp" />
+                android:backgroundTint="#202224"
+                android:outlineAmbientShadowColor="#fcf0d1"
+                android:outlineSpotShadowColor="#fcf0d1"
+                app:cardElevation="8dp">
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnSelectImage"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_weight="1"
-                android:text="🖼️ Gallery"
-                app:iconPadding="8dp" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnTakePhoto"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="70dp"
+                    android:backgroundTint="#202224"
+                    android:fontFamily="sans-serif-medium"
+                    android:gravity="center"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:text="📷\nCamera"
+                    android:textColor="#fcf0d1"
+                    android:textSize="12sp"
+                    app:strokeColor="#fcf0d1"
+                    app:strokeWidth="1dp" />
+            </androidx.cardview.widget.CardView>
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnSelectFile"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            <androidx.cardview.widget.CardView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
                 android:layout_weight="1"
-                android:text="📄 Files"
-                app:iconPadding="8dp" />
+                android:backgroundTint="#202224"
+                android:outlineAmbientShadowColor="#fcf0d1"
+                android:outlineSpotShadowColor="#fcf0d1"
+                app:cardElevation="8dp">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnSelectImage"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="70dp"
+                    android:backgroundTint="#202224"
+                    android:fontFamily="sans-serif-medium"
+                    android:gravity="center"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:text="🖼️\nGallery"
+                    android:textColor="#fcf0d1"
+                    android:textSize="12sp"
+                    app:strokeColor="#fcf0d1"
+                    app:strokeWidth="1dp" />
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:backgroundTint="#202224"
+                android:outlineAmbientShadowColor="#fcf0d1"
+                android:outlineSpotShadowColor="#fcf0d1"
+                app:cardElevation="8dp">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnSelectFile"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="70dp"
+                    android:backgroundTint="#202224"
+                    android:fontFamily="sans-serif-medium"
+                    android:gravity="center"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:text="📄\nFiles"
+                    android:textColor="#fcf0d1"
+                    android:textSize="12sp"
+                    app:strokeColor="#fcf0d1"
+                    app:strokeWidth="1dp" />
+            </androidx.cardview.widget.CardView>
         </LinearLayout>
 
         <!-- 🖼️ Image Preview -->
-        <HorizontalScrollView
+        <android.widget.HorizontalScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            android:scrollbars="none">
+            android:scrollbars="none"
+            android:fillViewport="true"
+            android:importantForAccessibility="no">
 
             <LinearLayout
                 android:id="@+id/imagePreviewList"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:padding="4dp" />
-        </HorizontalScrollView>
+                android:padding="10dp"
+                android:gravity="center_vertical" />
+        </android.widget.HorizontalScrollView>
+
+        <!-- 🧾 OCR Result Card -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#191C1E"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="0dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    android:fontFamily="@font/poppins"
+                    android:text="📄 Extracted Text"
+                    android:textColor="#fcf0d1"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="#FCF5FDFF"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="4dp">
+
+                    <EditText
+                        android:id="@+id/ocrResult"
+                        android:layout_width="match_parent"
+                        android:layout_height="200dp"
+                        android:background="@android:color/transparent"
+                        android:fontFamily="@font/poppins"
+                        android:gravity="start|top"
+                        android:hint="Text will appear here..."
+                        android:inputType="textMultiLine"
+                        android:maxLines="100"
+                        android:padding="16dp"
+                        android:scrollbars="vertical"
+                        android:textColor="#202224"
+                        android:textColorHint="#9E9E9E"
+                        android:textSize="16sp" />
+                </androidx.cardview.widget.CardView>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- 🧭 Mode & Settings Card (Merged) -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:backgroundTint="#191C1E"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="0dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="10dp">
+
+                <!-- Mode Selection -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    android:fontFamily="@font/poppins"
+                    android:text="🧭 Choose Mode"
+                    android:textColor="#fcf0d1"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp"
+                    android:backgroundTint="#FCF5FDFF"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
+                    app:cardCornerRadius="14dp"
+                    app:cardElevation="4dp">
+
+                    <com.google.android.material.button.MaterialButtonToggleGroup
+                        android:id="@+id/modeToggleGroup"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="8dp"
+                        app:selectionRequired="true"
+                        app:singleSelection="true">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnModeSummarize"
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                            android:layout_width="0dp"
+                            android:layout_height="52dp"
+                            android:layout_weight="1"
+                            android:backgroundTint="#FCF5FDFF"
+                            android:fontFamily="@font/poppins"
+                            android:text="Summarize"
+                            android:textColor="#202224"
+                            android:textSize="11sp"
+                            app:cornerRadius="12dp"
+                            app:strokeColor="#202224"
+                            app:strokeWidth="2dp" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnModeFlashcards"
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                            android:layout_width="0dp"
+                            android:layout_height="52dp"
+                            android:layout_weight="1"
+                            android:backgroundTint="#FCF5FDFF"
+                            android:fontFamily="@font/poppins"
+                            android:text="Flashcards"
+                            android:textColor="#202224"
+                            android:textSize="11sp"
+                            app:cornerRadius="12dp"
+                            app:strokeColor="#202224"
+                            app:strokeWidth="2dp" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnModeQuiz"
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                            android:layout_width="0dp"
+                            android:layout_height="52dp"
+                            android:layout_weight="1"
+                            android:backgroundTint="#FCF5FDFF"
+                            android:fontFamily="@font/poppins"
+                            android:text="Quiz"
+                            android:textColor="#202224"
+                            android:textSize="11sp"
+                            app:cornerRadius="12dp"
+                            app:strokeColor="#202224"
+                            app:strokeWidth="2dp" />
+                    </com.google.android.material.button.MaterialButtonToggleGroup>
+                </androidx.cardview.widget.CardView>
+
+                <!-- Settings Section -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:fontFamily="@font/poppins"
+                    android:text="⚙️ Settings"
+                    android:textColor="#fcf0d1"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <!-- Flashcard Count -->
+                <LinearLayout
+                    android:id="@+id/layoutFlashcardCount"
+                    android:layout_width="300dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="16dp"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        android:fontFamily="@font/poppins"
+                        android:text="🔢 Flashcard Count"
+                        android:textColor="#E0E0E0"
+                        android:textSize="16sp" />
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="300dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:backgroundTint="#FCF5FDFF"
+                        app:cardCornerRadius="14dp"
+                        app:cardElevation="4dp">
+
+                        <Spinner
+                            android:id="@+id/spinnerFlashcardCount"
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:background="@android:color/transparent"
+                            android:paddingStart="16dp"
+                            android:paddingEnd="16dp" />
+                    </androidx.cardview.widget.CardView>
+                </LinearLayout>
+
+                <!-- Quiz Count -->
+                <LinearLayout
+                    android:id="@+id/layoutQuizCount"
+                    android:layout_width="300dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="16dp"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        android:fontFamily="@font/poppins"
+                        android:text="📝 Quiz Questions"
+                        android:textColor="#E0E0E0"
+                        android:textSize="16sp" />
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="300dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:backgroundTint="#FCF5FDFF"
+                        app:cardCornerRadius="14dp"
+                        app:cardElevation="4dp">
+
+                        <Spinner
+                            android:id="@+id/spinnerQuizCount"
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:background="@android:color/transparent"
+                            android:paddingStart="16dp"
+                            android:paddingEnd="16dp" />
+                    </androidx.cardview.widget.CardView>
+                </LinearLayout>
+
+                <!-- Quiz Time -->
+                <LinearLayout
+                    android:id="@+id/layoutQuizTime"
+                    android:layout_width="300dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="16dp"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        android:fontFamily="@font/poppins"
+                        android:text="⏱ Time per Question"
+                        android:textColor="#E0E0E0"
+                        android:textSize="16sp" />
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="300dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:backgroundTint="#FCF5FDFF"
+                        app:cardCornerRadius="14dp"
+                        app:cardElevation="4dp">
+
+                        <Spinner
+                            android:id="@+id/spinnerTimePerQuestion"
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:background="@android:color/transparent"
+                            android:paddingStart="16dp"
+                            android:paddingEnd="16dp" />
+                    </androidx.cardview.widget.CardView>
+                </LinearLayout>
+
+                <!-- ⚙️ Summary Options -->
+                <LinearLayout
+                    android:id="@+id/layoutSummaryOptions"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        android:fontFamily="@font/poppins"
+                        android:text="🔧 Summary Options"
+                        android:textColor="#E0E0E0"
+                        android:textSize="16sp" />
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="300dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginBottom="12dp"
+                        android:backgroundTint="#FCF5FDFF"
+                        app:cardCornerRadius="14dp"
+                        app:cardElevation="4dp">
+
+                        <Spinner
+                            android:id="@+id/spinnerLength"
+                            android:layout_width="300dp"
+                            android:layout_height="48dp"
+                            android:layout_gravity="center"
+                            android:background="@android:color/transparent"
+                            android:paddingStart="16dp"
+                            android:paddingEnd="16dp" />
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="300dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginBottom="16dp"
+                        android:backgroundTint="#FCF5FDFF"
+                        app:cardCornerRadius="14dp"
+                        app:cardElevation="4dp">
+
+                        <Spinner
+                            android:id="@+id/spinnerFormat"
+                            android:layout_width="match_parent"
+                            android:layout_height="48dp"
+                            android:background="@android:color/transparent"
+                            android:paddingStart="16dp"
+                            android:paddingEnd="16dp" />
+                    </androidx.cardview.widget.CardView>
+                </LinearLayout>
+
+                <!-- 🌐 Language Selection -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:fontFamily="@font/poppins"
+                    android:text="🌐 Output Language"
+                    android:textColor="#E0E0E0"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="300dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:backgroundTint="#FCF5FDFF"
+                    app:cardCornerRadius="14dp"
+                    app:cardElevation="4dp">
+
+                    <Spinner
+                        android:id="@+id/spinnerLanguage"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:background="@android:color/transparent"
+                        android:entries="@array/language_options"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp" />
+                </androidx.cardview.widget.CardView>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- ✨ Process Button -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:backgroundTint="#fcf0d1"
+            app:cardCornerRadius="16dp">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnSummarize"
+                style="@style/Widget.MaterialComponents.Button"
+                android:layout_width="250dp"
+                android:layout_height="48dp"
+                android:backgroundTint="#fcf0d1"
+                android:fontFamily="@font/poppins"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:text="Process Text"
+                android:textColor="#202224"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:cornerRadius="16dp" />
+        </androidx.cardview.widget.CardView>
 
         <!-- ⏳ ProgressBar -->
         <ProgressBar
@@ -77,304 +536,191 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginBottom="12dp"
+            android:layout_marginBottom="16dp"
+            android:indeterminateTint="#fcf0d1"
             android:visibility="gone" />
 
-        <!-- 🧾 OCR Result -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="📄 OCR Result"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="8dp" />
-
-        <EditText
-            android:id="@+id/ocrResult"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:gravity="start|top"
-            android:background="@drawable/rounded_border"
-            android:textSize="16sp"
-            android:inputType="textMultiLine"
-            android:scrollbars="vertical"
-            android:maxLines="100"
-            android:padding="12dp"
-            android:textColor="#000000" />
-
-        <!-- 🧭 Mode Toggle -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="🧭 Mode"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="4dp" />
-
-        <!-- 🧭 Mode Toggle -->
-        <com.google.android.material.button.MaterialButtonToggleGroup
-            android:id="@+id/modeToggleGroup"
+        <!-- 🧠 Output Card -->
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="12dp"
-            android:backgroundTint="#ECECEC"
-            android:clipToPadding="false"
-            android:padding="4dp"
-            app:singleSelection="true">
+            android:layout_marginBottom="20dp"
+            android:backgroundTint="#191C1E"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="0dp">
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnModeSummarize"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="📝 Summarize"
-                android:textSize="14sp"
-                android:maxLines="1"
-                android:ellipsize="none"
-                android:minEms="5"
-                android:paddingStart="4dp"
-                android:paddingEnd="4dp"
-                android:textAlignment="center"
-                app:cornerRadius="8dp" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnModeFlashcards"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="🧠 Flashcards"
-                android:textSize="14sp"
-                android:maxLines="1"
-                android:ellipsize="none"
-                android:minEms="5"
-                android:paddingStart="4dp"
-                android:paddingEnd="4dp"
-                android:textAlignment="center"
-                app:cornerRadius="8dp" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnModeQuiz"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="📝 Quiz"
-                android:textSize="14sp"
-                android:maxLines="1"
-                android:ellipsize="none"
-                android:minEms="5"
-                android:paddingStart="4dp"
-                android:paddingEnd="4dp"
-                android:textAlignment="center"
-                app:cornerRadius="8dp" />
-        </com.google.android.material.button.MaterialButtonToggleGroup>
-
-        <!-- Flashcard & Quiz Settings (Grouped) -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <!-- Flashcard Count -->
             <LinearLayout
-                android:id="@+id/layoutFlashcardCount"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:visibility="gone"
-                android:layout_marginBottom="12dp">
+                android:padding="20dp"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp">
 
                 <TextView
+                    android:id="@+id/labelResult"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="🔢 Flashcard Count"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:layout_marginBottom="4dp" />
+                    android:layout_marginBottom="12dp"
+                    android:fontFamily="@font/poppins"
+                    android:text="🧠 Output"
+                    android:textColor="#fcf0d1"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
 
-                <Spinner
-                    android:id="@+id/spinnerFlashcardCount"
+                <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-            </LinearLayout>
-
-            <!-- Quiz Count -->
-            <LinearLayout
-                android:id="@+id/layoutQuizCount"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:visibility="gone"
-                android:layout_marginBottom="12dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="📝 Quiz Questions"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:layout_marginBottom="4dp" />
+                    android:backgroundTint="#FCF5FDFF"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="4dp">
 
-                <Spinner
-                    android:id="@+id/spinnerQuizCount"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    <ScrollView
+                        android:id="@+id/resultContainer"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:maxHeight="240dp"
+                        android:padding="16dp">
+
+                        <TextView
+                            android:id="@+id/txtSummary"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/poppins"
+                            android:lineSpacingExtra="4dp"
+                            android:text="Summary or flashcards will appear here..."
+                            android:textColor="#202224"
+                            android:textSize="15sp" />
+                    </ScrollView>
+                </androidx.cardview.widget.CardView>
             </LinearLayout>
+        </androidx.cardview.widget.CardView>
 
-            <!-- Quiz Time -->
-            <LinearLayout
-                android:id="@+id/layoutQuizTime"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:visibility="gone"
-                android:layout_marginBottom="12dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="⏱ Time per Question"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:layout_marginBottom="4dp" />
-
-                <Spinner
-                    android:id="@+id/spinnerTimePerQuestion"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-            </LinearLayout>
-        </LinearLayout>
-
-        <!-- ⚙️ Summary Options -->
-        <LinearLayout
-            android:id="@+id/layoutSummaryOptions"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="⚙️ Summary Options"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="4dp" />
-
-            <Spinner
-                android:id="@+id/spinnerLength"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp" />
-
-            <Spinner
-                android:id="@+id/spinnerFormat"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp" />
-        </LinearLayout>
-
-        <!-- 🌐 Language Selection -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="🌐 Output Language"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:layout_marginTop="12dp"
-            android:layout_marginBottom="4dp" />
-
-        <Spinner
-            android:id="@+id/spinnerLanguage"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:entries="@array/language_options"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="12dp" />
-
-
-        <!-- ✨ Process Button -->
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnSummarize"
-            style="@style/Widget.MaterialComponents.Button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="✨ Process Text"
-            android:textSize="16sp"
-            android:layout_marginBottom="16dp" />
-
-        <!-- 🧠 Output -->
-        <TextView
-            android:id="@+id/labelResult"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="🧠 Output"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="4dp" />
-
-        <ScrollView
-            android:id="@+id/resultContainer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#F0F0F0"
-            android:padding="12dp"
-            android:layout_marginBottom="16dp">
-
-            <TextView
-                android:id="@+id/txtSummary"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Summary or flashcards will appear here..."
-                android:textSize="15sp"
-                android:textColor="#333333" />
-        </ScrollView>
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnHistory"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="📜 View History"
-            android:layout_marginBottom="16dp"
-            />
-
-
-        <!-- 🧹 Clear / 📋 Copy -->
+        <!-- 🧹 Clear / 📋 Copy Buttons -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:layout_marginBottom="32dp"
+            android:orientation="horizontal"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
             android:weightSum="3">
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnClear"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            <androidx.cardview.widget.CardView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
                 android:layout_weight="1"
-                android:text="🗑️ Clear" />
+                android:backgroundTint="#202224"
+                android:outlineAmbientShadowColor="#fcf0d1"
+                android:outlineSpotShadowColor="#fcf0d1"
+                app:cardElevation="8dp">
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnCopyOcr"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginStart="8dp"
-                android:text="📋 Copy OCR" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnClear"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="54dp"
+                    android:backgroundTint="#202224"
+                    android:fontFamily="@font/poppins"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:text="🗑️\nClear"
+                    android:textColor="#E53935"
+                    android:textSize="11sp"
+                    app:strokeColor="#EF9A9A"
+                    app:strokeWidth="1dp" />
+            </androidx.cardview.widget.CardView>
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnCopySummary"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            <androidx.cardview.widget.CardView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_weight="1"
+                android:backgroundTint="#202224"
+                android:outlineAmbientShadowColor="#fcf0d1"
+                android:outlineSpotShadowColor="#fcf0d1"
+                app:cardElevation="8dp">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnCopyOcr"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="54dp"
+                    android:backgroundTint="#202224"
+                    android:fontFamily="@font/poppins"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:text="📋\nCopy OCR"
+                    android:textColor="#fcf0d1"
+                    android:textSize="11sp"
+                    app:strokeColor="#fcf0d1"
+                    app:strokeWidth="1dp" />
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_marginStart="8dp"
-                android:text="📋 Copy Summary" />
+                android:backgroundTint="#202224"
+                android:outlineAmbientShadowColor="#fcf0d1"
+                android:outlineSpotShadowColor="#fcf0d1"
+                app:cardElevation="8dp">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnCopySummary"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="54dp"
+                    android:backgroundTint="#202224"
+                    android:fontFamily="@font/poppins"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:text="📋\nCopy Summary"
+                    android:textColor="#fcf0d1"
+                    android:textSize="11sp"
+                    app:strokeColor="#fcf0d1"
+                    app:strokeWidth="1dp" />
+            </androidx.cardview.widget.CardView>
         </LinearLayout>
 
+        <!-- History Button -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:backgroundTint="#202224"
+            android:outlineAmbientShadowColor="#fcf0d1"
+            android:outlineSpotShadowColor="#fcf0d1"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnHistory"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="54dp"
+                    android:backgroundTint="#202224"
+                    android:fontFamily="@font/poppins"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:text="📜 View History"
+                    android:textColor="#fcf0d1"
+                    android:textSize="15sp"
+                    app:strokeColor="#fcf0d1" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
 
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

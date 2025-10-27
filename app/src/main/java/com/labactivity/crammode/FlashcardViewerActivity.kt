@@ -43,6 +43,11 @@ class FlashcardViewerActivity : AppCompatActivity() {
             }
         }
 
+        val btnBack = findViewById<ImageButton>(R.id.btnBack)
+        btnBack.setOnClickListener {
+            finish()
+        }
+
         // Disable/enable buttons based on position
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {

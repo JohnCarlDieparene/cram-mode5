@@ -22,25 +22,14 @@
         tools:targetApi="31">
 
         <!-- App Activities -->
-        <activity android:name=".DashboardActivity" />
-        <activity android:name=".Profile" />
         <activity android:name=".ReviewActivity" />
-        <activity android:name=".FlashcardActivity" />
-        <activity android:name=".QuizActivity" />
         <activity android:name=".OCRActivity" />
         <activity android:name=".RegisterActivity" />
-        <activity android:name=".CreateActivity" />
-        <activity android:name=".Flashcards" />
-        <activity android:name=".Quizzes" />
-        <activity android:name=".Summaries" />
-        <activity android:name=".CreateSummaryActivity" />
-        <activity android:name=".DisplaySummariesActivity" />
         <activity android:name=".MainActivity" />
         <activity android:name=".FlashcardViewerActivity" />
         <activity android:name=".QuizViewerActivity" />
         <activity android:name=".FullscreenImageActivity" />
         <activity android:name=".HistoryActivity"/>
-
         <activity android:name="com.canhub.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat" />
 
