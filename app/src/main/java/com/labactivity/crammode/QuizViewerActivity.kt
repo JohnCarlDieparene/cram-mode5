@@ -1,6 +1,5 @@
 package com.labactivity.crammode
 
-import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -15,6 +14,7 @@ import com.google.firebase.ktx.Firebase
 import com.labactivity.crammode.model.QuizQuestion
 
 class QuizViewerActivity : AppCompatActivity() {
+
 
     // --- UI Elements ---
     private lateinit var txtQuestion: TextView
@@ -41,6 +41,13 @@ class QuizViewerActivity : AppCompatActivity() {
     private var questionTimeMillis: Long = 15000L
     private var countDownTimer: CountDownTimer? = null
 
+    private var originalQuizList: List<QuizQuestion> = listOf()
+
+
+
+    // --- Session Memory for Avoiding Repeats ---
+    private val seenQuestions = mutableSetOf<String>()
+
     private val firestore = Firebase.firestore
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,7 +57,7 @@ class QuizViewerActivity : AppCompatActivity() {
         bindUI()
         loadIntentData()
         setupButtons()
-        fetchWeakQuestionsAndStartQuiz()
+        fetchQuizAndStart()
     }
 
     /** --- UI Binding --- */
@@ -91,9 +98,8 @@ class QuizViewerActivity : AppCompatActivity() {
         btnPrevious.setOnClickListener { goToPreviousQuestion() }
     }
 
-    /** --- Fetch Weak Questions and Merge Quiz --- */
-    private fun fetchWeakQuestionsAndStartQuiz() {
-        val user = FirebaseAuth.getInstance().currentUser ?: return
+    /** --- Load Quiz & Prevent Repeated Questions --- */
+    private fun fetchQuizAndStart() {
         val newQuiz = intent.getParcelableArrayListExtra<QuizQuestion>("quizQuestions") ?: arrayListOf()
         if (newQuiz.isEmpty()) {
             txtQuestion.text = "No questions available."
@@ -102,48 +108,22 @@ class QuizViewerActivity : AppCompatActivity() {
             return
         }
 
-        val topic = newQuiz.firstOrNull()?.topic ?: "default"
-        val selectedCount = intent.getIntExtra("quizCount", 10)
+        // Remove already seen questions in session
+        val filteredQuiz = newQuiz.filter { it.question !in seenQuestions }
+        quizList = if (filteredQuiz.isEmpty()) ArrayList(newQuiz.distinctBy { it.question }.shuffled())
+        else ArrayList(filteredQuiz.distinctBy { it.question }.shuffled())
 
-        firestore.collection("users")
-            .document(user.uid)
-            .collection("weak_questions")
-            .whereEqualTo("topic", topic)
-            .get()
-            .addOnSuccessListener { snapshot ->
-                val weakQuestions = snapshot.documents.map { doc ->
-                    QuizQuestion(
-                        question = doc.getString("question") ?: "",
-                        options = doc.get("options") as? List<String> ?: emptyList(),
-                        correctAnswer = doc.getString("correctAnswer") ?: "",
-                        userAnswer = null,
-                        isCorrect = false,
-                        timesWrong = (doc.getLong("timesWrong") ?: 0L).toInt(),
-                        topic = topic
-                    )
-                }
+        // Mark current quiz questions as seen
+        quizList.forEach { seenQuestions.add(it.question) }
 
-                // --- Combine AI + weak questions without duplicates ---
-                val combinedSet = mutableSetOf<QuizQuestion>()
-                combinedSet.addAll(newQuiz.shuffled())
-                weakQuestions.shuffled().forEach { if (combinedSet.size < selectedCount) combinedSet.add(it) }
+        // Save the original quiz for retakes
+        originalQuizList = ArrayList(quizList)
 
-                quizList = ArrayList(combinedSet.shuffled())
 
-                if (quizList.isNotEmpty()) {
-                    currentIndex = 0
-                    score = 0
-                    updateProgress()
-                    showQuestion()
-                } else {
-                    txtQuestion.text = "No questions available."
-                    btnSubmit.isEnabled = false
-                    btnNext.isEnabled = false
-                }
-            }
-            .addOnFailureListener {
-                Toast.makeText(this, "Failed to fetch weak questions", Toast.LENGTH_SHORT).show()
-            }
+        currentIndex = 0
+        score = 0
+        updateProgress()
+        showQuestion()
     }
 
     /** --- Show Question --- */
@@ -263,7 +243,7 @@ class QuizViewerActivity : AppCompatActivity() {
         showQuestion()
     }
 
-    /** --- Quiz Summary + Weak Question Review --- */
+    /** --- Quiz Summary with Retake Option --- */
     private fun showQuizSummary() {
         val total = quizList.size
         val correctCount = quizList.count { it.isCorrect }
@@ -278,10 +258,14 @@ class QuizViewerActivity : AppCompatActivity() {
                 saveWeakQuestions()
                 finish()
             }
+            .setNeutralButton("Retake Quiz") { dialog, _ ->
+                dialog.dismiss()
+                retakeQuiz()
+            }
             .setCancelable(false)
 
         if (weakQuestions.isNotEmpty()) {
-            builder.setNeutralButton("Review Weak Questions") { dialog, _ ->
+            builder.setNegativeButton("Review Weak Questions") { dialog, _ ->
                 dialog.dismiss()
                 reviewWeakQuestions(weakQuestions)
             }
@@ -289,18 +273,41 @@ class QuizViewerActivity : AppCompatActivity() {
         builder.show()
     }
 
-    /** --- Review Weak Questions --- */
-    private fun reviewWeakQuestions(weakQuestions: List<QuizQuestion>) {
-        quizList = ArrayList(weakQuestions.shuffled())
+    /** --- Retake Quiz --- */
+    private fun retakeQuiz() {
+        quizList = ArrayList(originalQuizList.map { it.copy(userAnswer = null, isCorrect = false) })
         currentIndex = 0
         score = 0
         answered = false
         readOnly = false
         countDownTimer?.cancel()
-        Toast.makeText(this, "Reviewing ${weakQuestions.size} weak questions!", Toast.LENGTH_SHORT).show()
         updateProgress()
         showQuestion()
     }
+
+
+    /** --- Review Weak Questions --- */
+    private fun reviewWeakQuestions(weakQuestions: List<QuizQuestion>) {
+        // Use a separate copy of weak questions for review, without modifying the original quiz
+        val reviewList = ArrayList(weakQuestions.shuffled())
+
+        // Temporarily assign quizList for the review session
+        val previousQuizList = quizList
+        quizList = reviewList
+        currentIndex = 0
+        score = 0
+        answered = false
+        readOnly = false
+        countDownTimer?.cancel()
+
+        Toast.makeText(this, "Reviewing ${weakQuestions.size} weak questions!", Toast.LENGTH_SHORT).show()
+        updateProgress()
+        showQuestion()
+
+        // When review ends (or user presses back), restore the original quizList automatically
+        // Optional: handle in onBackPressed() or a dedicated end-review button if needed
+    }
+
 
     /** --- Save Weak Questions --- */
     private fun saveWeakQuestions() {
@@ -382,4 +389,6 @@ class QuizViewerActivity : AppCompatActivity() {
         super.onDestroy()
         countDownTimer?.cancel()
     }
+
+
 }

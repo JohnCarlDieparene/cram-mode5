@@ -867,91 +867,142 @@ class   OCRActivity : AppCompatActivity() {
         val count = spinnerQuizCount.selectedItem.toString().toInt()
         val shortenedText = text.take(3000)
 
+
         progressBar.visibility = View.VISIBLE
         btnSummarize.isEnabled = false
 
-        val systemPrompt = if (selectedLanguage == "Filipino") {
-            """
-        Ikaw ay isang AI quiz generator. Gumawa ng eksaktong $count multiple-choice na tanong mula sa pangunahing salita at mahahalagang konsepto ng teksto.
-        Bawat tanong AY DAPAT may paksa.
-        Gamitin ang eksaktong format na ito:
-        
-        Tanong: <question text>
-        A. <choice1>
-        B. <choice2>
-        C. <choice3>
-        D. <choice4>
-        Sagot: <tamang letra A-D>
-        """.trimIndent()
-        } else {
-            """
-        You are an AI quiz generator. Generate exactly $count multiple-choice questions based on main keywords and key concepts.
-        Each question MUST include a topic.
-        Use this exact format:
-        
-        Question: <question text>
-        A. <choice1>
-        B. <choice2>
-        C. <choice3>
-        D. <choice4>
-        Answer: <correct letter A-D>
-        """.trimIndent()
-        }
-
-        val userPrompt = if (selectedLanguage == "Filipino") {
-            "Gumawa ng $count tanong mula sa pangunahing salita at mahahalagang konsepto ng tekstong ito:\n\n$shortenedText\n\nSundin ang format."
-        } else {
-            "Generate $count questions from the main keywords and key concepts of this text:\n\n$shortenedText\n\nFollow the format exactly."
-        }
-
-        val request = ChatRequest(
-            messages = listOf(
-                ChatMessage("system", listOf(MessageContent(text = systemPrompt))),
-                ChatMessage("user", listOf(MessageContent(text = userPrompt)))
-            )
-        )
-
-        sendChatRequest(request) { reply ->
-            // Parse quiz questions (returns List<QuizQuestion>)
-            val questions = QuizUtils.parseQuizQuestions(reply)
-
-            if (questions.isNotEmpty()) {
-                // Remove duplicates if any
-                val uniqueQuestions = questions.distinctBy { it.question }.take(count)
-
-                val user = FirebaseAuth.getInstance().currentUser
-                if (user != null) {
-                    val history = StudyHistory(
-                        uid = user.uid,
-                        type = "quiz",
-                        inputText = text,
-                        resultText = reply,
-                        timestamp = System.currentTimeMillis(),
-                        quiz = ArrayList(uniqueQuestions)
-                    )
-
-                    Firebase.firestore.collection("study_history")
-                        .add(history)
-                        .addOnSuccessListener { Log.d("SaveHistory", "Quiz saved with full data") }
-                        .addOnFailureListener { e -> Log.e("SaveHistory", "Failed to save quiz", e) }
-
-                    // Start QuizViewerActivity
-                    val intent = Intent(this, QuizViewerActivity::class.java)
-                    intent.putParcelableArrayListExtra("quizQuestions", ArrayList(uniqueQuestions))
-                    intent.putExtra("timestamp", history.timestamp)
-                    intent.putExtra("readOnly", false)
-                    intent.putExtra("quizCount", count)
-                    startActivity(intent)
-                }
-            } else {
-                txtSummary.text = reply
-                Toast.makeText(this, "No quiz questions generated.", Toast.LENGTH_LONG).show()
-            }
-
+        val user = FirebaseAuth.getInstance().currentUser
+        if (user == null) {
+            Toast.makeText(this, "User not logged in.", Toast.LENGTH_SHORT).show()
             progressBar.visibility = View.GONE
             btnSummarize.isEnabled = true
+            return
         }
+
+// Step 1: Fetch all previously used questions globally
+        Firebase.firestore.collection("users")
+            .document(user.uid)
+            .collection("used_questions")
+            .get()
+            .addOnSuccessListener { snapshot ->
+                val usedQuestions = snapshot.mapNotNull { it.getString("question") }.toSet()
+
+                // Step 2: Construct AI prompts including instructions to avoid used questions
+                val avoidListText = if (usedQuestions.isNotEmpty()) {
+                    val listPreview = usedQuestions.take(10).joinToString(separator = "\n") { "- $it" }
+                    "Do NOT generate these questions (previously used):\n$listPreview\n…"
+                } else ""
+
+                val systemPrompt = if (selectedLanguage == "Filipino") {
+                    """
+            Ikaw ay isang AI quiz generator. Gumawa ng eksaktong $count multiple-choice na tanong mula sa pangunahing salita at mahahalagang konsepto ng teksto.
+            Bawat tanong AY DAPAT may paksa.
+            Gamitin ang eksaktong format na ito:
+            
+            Tanong: <question text>
+            A. <choice1>
+            B. <choice2>
+            C. <choice3>
+            D. <choice4>
+            Sagot: <tamang letra A-D>
+            """.trimIndent()
+                } else {
+                    """
+            You are an AI quiz generator. Generate exactly $count multiple-choice questions based on main keywords and key concepts.
+            Each question MUST include a topic.
+            Use this exact format:
+            
+            Question: <question text>
+            A. <choice1>
+            B. <choice2>
+            C. <choice3>
+            D. <choice4>
+            Answer: <correct letter A-D>
+            """.trimIndent()
+                }
+
+                val userPrompt = if (selectedLanguage == "Filipino") {
+                    "Gumawa ng $count tanong mula sa pangunahing salita at mahahalagang konsepto ng tekstong ito:\n\n$shortenedText\n\n$avoidListText\nSundin ang format."
+                } else {
+                    "Generate $count questions from the main keywords and key concepts of this text:\n\n$shortenedText\n\n$avoidListText\nFollow the format exactly."
+                }
+
+                val request = ChatRequest(
+                    messages = listOf(
+                        ChatMessage("system", listOf(MessageContent(text = systemPrompt))),
+                        ChatMessage("user", listOf(MessageContent(text = userPrompt)))
+                    )
+                )
+
+                // Step 3: Send AI request
+                sendChatRequest(request) { reply ->
+                    val questions = QuizUtils.parseQuizQuestions(reply)
+
+                    if (questions.isNotEmpty()) {
+                        // Step 4: Filter out duplicates and previously used questions
+                        val uniqueQuestions = questions
+                            .distinctBy { it.question }
+                            .filter { it.question !in usedQuestions }
+                            .take(count)
+
+                        if (uniqueQuestions.isEmpty()) {
+                            Toast.makeText(this, "No new unique questions could be generated.", Toast.LENGTH_LONG).show()
+                            progressBar.visibility = View.GONE
+                            btnSummarize.isEnabled = true
+                            return@sendChatRequest
+                        }
+
+                        // Step 5: Save new questions as used
+                        val batch = Firebase.firestore.batch()
+                        uniqueQuestions.forEach { q ->
+                            val docRef = Firebase.firestore.collection("users")
+                                .document(user.uid)
+                                .collection("used_questions")
+                                .document(q.question.hashCode().toString())
+                            batch.set(docRef, mapOf("question" to q.question))
+                        }
+                        batch.commit()
+
+                        // Step 6: Save quiz history
+                        val history = StudyHistory(
+                            uid = user.uid,
+                            type = "quiz",
+                            inputText = text,
+                            resultText = reply,
+                            timestamp = System.currentTimeMillis(),
+                            quiz = ArrayList(uniqueQuestions)
+                        )
+                        Firebase.firestore.collection("study_history")
+                            .add(history)
+                            .addOnSuccessListener { Log.d("SaveHistory", "Quiz saved with full data") }
+                            .addOnFailureListener { e -> Log.e("SaveHistory", "Failed to save quiz", e) }
+
+                        // Step 7: Launch QuizViewerActivity
+                        val intent = Intent(this, QuizViewerActivity::class.java)
+                        intent.putParcelableArrayListExtra("quizQuestions", ArrayList(uniqueQuestions))
+                        intent.putExtra("timestamp", history.timestamp)
+                        intent.putExtra("readOnly", false)
+                        intent.putExtra("quizCount", count)
+                        startActivity(intent)
+                    } else {
+                        txtSummary.text = reply
+                        Toast.makeText(this, "No quiz questions generated.", Toast.LENGTH_LONG).show()
+                    }
+
+                    progressBar.visibility = View.GONE
+                    btnSummarize.isEnabled = true
+                }
+            }
+            .addOnFailureListener {
+                Toast.makeText(this, "Failed to fetch used questions.", Toast.LENGTH_SHORT).show()
+                progressBar.visibility = View.GONE
+                btnSummarize.isEnabled = true
+            }
+
+
     }
+
+
 
 
 
