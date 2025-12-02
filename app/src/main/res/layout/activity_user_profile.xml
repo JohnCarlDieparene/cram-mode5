@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nestedScrollView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#191C1E"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:id="@+id/rootLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp"
+        android:gravity="center_horizontal">
+
+        <!-- Header -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingTop="40dp"
+            android:paddingBottom="20dp">
+
+            <ImageView
+                android:id="@+id/imgProfilePhoto"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:src="@drawable/ic_user"
+                android:scaleType="centerCrop"
+                android:contentDescription="Profile Photo"
+                android:background="@drawable/circle_background"
+                android:padding="4dp" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginStart="16dp">
+
+                <TextView
+                    android:id="@+id/txtUserName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="User Name"
+                    android:textColor="#fcf0d1"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/poppins" />
+
+                <TextView
+                    android:id="@+id/txtUserEmail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="user@email.com"
+                    android:textColor="#E0E0E0"
+                    android:textSize="14sp"
+                    android:fontFamily="@font/poppins" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Edit Profile Button -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:backgroundTint="#202224"
+            app:cardElevation="8dp"
+            app:cardCornerRadius="16dp">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnEditProfile"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="match_parent"
+                android:layout_height="54dp"
+                android:backgroundTint="#202224"
+                android:text="✏️ Edit Profile"
+                android:textColor="#fcf0d1"
+                android:textSize="14sp"
+                android:fontFamily="@font/poppins"
+                app:strokeColor="#fcf0d1"
+                app:strokeWidth="1dp" />
+        </androidx.cardview.widget.CardView>
+
+        <!-- View History Button -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:backgroundTint="#202224"
+            app:cardElevation="8dp"
+            app:cardCornerRadius="16dp">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnViewHistory"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="match_parent"
+                android:layout_height="54dp"
+                android:backgroundTint="#202224"
+                android:text="📜 View History"
+                android:textColor="#fcf0d1"
+                android:textSize="14sp"
+                android:fontFamily="@font/poppins"
+                app:strokeColor="#fcf0d1"
+                app:strokeWidth="1dp" />
+        </androidx.cardview.widget.CardView>
+
+        <!-- Logout Button -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:backgroundTint="#202224"
+            app:cardElevation="8dp"
+            app:cardCornerRadius="16dp">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnLogout"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="match_parent"
+                android:layout_height="54dp"
+                android:backgroundTint="#E53935"
+                android:text="🚪 Logout"
+                android:textColor="#fcf0d1"
+                android:textSize="14sp"
+                android:fontFamily="@font/poppins"
+                app:strokeColor="#FF7F7F"
+                app:strokeWidth="1dp" />
+        </androidx.cardview.widget.CardView>
+
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>
