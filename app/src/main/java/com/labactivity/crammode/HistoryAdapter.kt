@@ -12,6 +12,7 @@ import com.labactivity.crammode.model.StudyHistory
 import com.labactivity.crammode.utils.FlashcardUtils
 import java.text.SimpleDateFormat
 import java.util.*
+import android.widget.Toast
 
 class HistoryAdapter(
     val items: MutableList<StudyHistory>,
@@ -27,7 +28,7 @@ class HistoryAdapter(
         val btnDelete: ImageButton = itemView.findViewById(R.id.btnDelete)
     }
 
-    
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HistoryViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -51,10 +52,22 @@ class HistoryAdapter(
 
             "flashcards" -> {
                 holder.txtType.text = "Flashcards"
-                holder.icon.setImageResource(R.drawable.ic_flashcards) // ✅ flashcards icon
-                val flashcards = FlashcardUtils.parseFlashcards(item.resultText)
+                holder.icon.setImageResource(R.drawable.ic_flashcards)
+
+                val flashcards = item.flashcards
                 holder.txtPreview.text = "Flashcards: ${flashcards.size} cards"
+
+                holder.card.setOnClickListener {
+                    if (flashcards.isEmpty()) {
+                        Toast.makeText(holder.itemView.context, "No flashcards received", Toast.LENGTH_SHORT).show()
+                        return@setOnClickListener
+                    }
+                    val intent = Intent(holder.itemView.context, FlashcardViewerActivity::class.java)
+                    intent.putExtra("flashcards", ArrayList(flashcards))
+                    holder.itemView.context.startActivity(intent)
+                }
             }
+
 
             "quiz" -> {
                 holder.txtType.text = "Quiz"
@@ -77,9 +90,14 @@ class HistoryAdapter(
                 }
 
                 "flashcards" -> {
-                    val flashcards = FlashcardUtils.parseFlashcards(item.resultText)
+                    val flashcards = item.flashcards
+                    if (flashcards.isNullOrEmpty()) {
+                        Toast.makeText(context, "No flashcards received", Toast.LENGTH_SHORT).show()
+                        return@setOnClickListener
+                    }
                     val intent = Intent(context, FlashcardViewerActivity::class.java)
                     intent.putExtra("flashcards", ArrayList(flashcards))
+                    intent.putExtra("readOnly", true) // ✅ REVIEW MODE
                     context.startActivity(intent)
                 }
 
@@ -92,6 +110,8 @@ class HistoryAdapter(
                 }
             }
         }
+
+
 
         // Delete click
         holder.btnDelete.setOnClickListener {

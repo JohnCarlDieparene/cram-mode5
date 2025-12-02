@@ -111,7 +111,6 @@ class   OCRActivity : AppCompatActivity() {
         setContentView(R.layout.activity_ocr)
 
 
-
         // Bind views
         btnSelectImage = findViewById(R.id.btnSelectImage)
         btnTakePhoto = findViewById(R.id.btnTakePhoto)
@@ -188,11 +187,6 @@ class   OCRActivity : AppCompatActivity() {
             android.R.layout.simple_spinner_dropdown_item,
             listOf("Paragraph", "Bullets")
         )
-
-
-
-
-
 
 
         val btnUserProfile: ImageButton = findViewById(R.id.btnUserProfile)
@@ -519,10 +513,6 @@ class   OCRActivity : AppCompatActivity() {
     }
 
 
-
-
-
-
     private fun processNextCrop() {
         if (imageCropQueue.isNotEmpty()) {
             val nextUri = imageCropQueue.removeFirst()
@@ -643,13 +633,17 @@ class   OCRActivity : AppCompatActivity() {
         val request = ChatRequest(
             model = "command-a-03-2025",
             messages = listOf(
-                ChatMessage("system", listOf(MessageContent(text = "You are a smart study assistant."))),
+                ChatMessage(
+                    "system",
+                    listOf(MessageContent(text = "You are a smart study assistant."))
+                ),
                 ChatMessage("user", listOf(MessageContent(text = prompt)))
             )
         )
 
         sendChatRequest(request) { reply ->
-            val keywords = reply?.split(",")?.map { it.trim() }?.filter { it.isNotEmpty() } ?: emptyList()
+            val keywords =
+                reply?.split(",")?.map { it.trim() }?.filter { it.isNotEmpty() } ?: emptyList()
             callback(keywords)
         }
     }
@@ -663,8 +657,18 @@ class   OCRActivity : AppCompatActivity() {
             var startIndex = text.indexOf(keyword, 0, ignoreCase = true)
             while (startIndex >= 0) {
                 val endIndex = startIndex + keyword.length
-                spannable.setSpan(StyleSpan(Typeface.BOLD), startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                spannable.setSpan(ForegroundColorSpan(color), startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                spannable.setSpan(
+                    StyleSpan(Typeface.BOLD),
+                    startIndex,
+                    endIndex,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+                spannable.setSpan(
+                    ForegroundColorSpan(color),
+                    startIndex,
+                    endIndex,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
                 startIndex = text.indexOf(keyword, endIndex, ignoreCase = true)
             }
         }
@@ -709,7 +713,8 @@ class   OCRActivity : AppCompatActivity() {
         )
 
         sendChatRequest(request) { reply ->
-            val summary = reply?.replace("**", "")?.trim().takeIf { it?.isNotBlank() == true } ?: "No summary generated."
+            val summary = reply?.replace("**", "")?.trim().takeIf { it?.isNotBlank() == true }
+                ?: "No summary generated."
 
             // Extract keywords using AI
             extractKeywordsAI(summary) { keywords ->
@@ -731,18 +736,16 @@ class   OCRActivity : AppCompatActivity() {
         }
     }
 
-
-
     private fun generateFlashcards(text: String) {
 
         val inputText = editTextFlashcardCount.text.toString()
         val count = inputText.toIntOrNull()
 
         if (count == null || count < 1 || count > 20) {
-            Toast.makeText(this, "Please enter a number between 1 and 20.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Please enter a number between 1 and 20.", Toast.LENGTH_SHORT)
+                .show()
             return
         }
-
 
         val shortenedText = text.take(3000)
 
@@ -786,8 +789,19 @@ class   OCRActivity : AppCompatActivity() {
         )
 
         sendChatRequest(request) { reply ->
+
+            // Log raw AI response
+            Log.d("FlashcardAIReply", reply)
+
             val newFlashcards = try {
-                FlashcardUtils.parseFlashcards(reply).shuffled()
+                val parsed = FlashcardUtils.parseFlashcards(reply).shuffled()
+
+                // Log all parsed flashcards
+                parsed.forEachIndexed { index, flashcard ->
+                    Log.d("FlashcardParsed", "Flashcard ${index + 1}: Q=${flashcard.question}, A=${flashcard.answer}")
+                }
+
+                parsed
             } catch (e: Exception) {
                 runOnUiThread {
                     Toast.makeText(this, "Failed to parse flashcards.", Toast.LENGTH_LONG).show()
@@ -836,14 +850,15 @@ class   OCRActivity : AppCompatActivity() {
                         .sortedByDescending { it.weight }
 
                     // Merge weak + AI-generated flashcards
-                    val finalFlashcards = (relevantWeightedFlashcards.map { it.flashcard } + newFlashcards)
-                        .distinctBy { it.question }
-                        .take(count)
+                    val finalFlashcards =
+                        (relevantWeightedFlashcards.map { it.flashcard } + newFlashcards)
+                            .distinctBy { it.question }
+                            .take(count)
 
                     // Save final flashcards to Firestore
                     finalFlashcards.forEach { flashcard ->
                         val docRef = Firebase.firestore.collection("user_flashcard_stats")
-                            .document("${user.uid}-${flashcard.question}")
+                            .document("${user.uid}-${flashcard.question.hashCode()}")
                         docRef.set(
                             mapOf(
                                 "uid" to user.uid,
@@ -869,7 +884,8 @@ class   OCRActivity : AppCompatActivity() {
                 }
                 .addOnFailureListener {
                     runOnUiThread {
-                        Toast.makeText(this, "Failed to load past flashcards.", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "Failed to load past flashcards.", Toast.LENGTH_SHORT)
+                            .show()
                         progressBar.visibility = View.GONE
                         btnSummarize.isEnabled = true
                     }
@@ -886,7 +902,6 @@ class   OCRActivity : AppCompatActivity() {
 
 
     private fun generateQuiz(text: String) {
-// --- Step 0: Get quiz count safely ---
         val inputText = editTextQuizCount.text.toString()
         val count = inputText.toIntOrNull()
         if (count == null || count < 1 || count > 30) {
@@ -898,42 +913,52 @@ class   OCRActivity : AppCompatActivity() {
         progressBar.visibility = View.VISIBLE
         btnSummarize.isEnabled = false
 
-// --- Step 1: Request slightly more questions from AI (20% extra) ---
-        val aiCount = (count * 1.2).toInt()
+        val user = FirebaseAuth.getInstance().currentUser
+        if (user == null) {
+            Toast.makeText(this, "User not logged in.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val selectedTimeText = spinnerTimePerQuestion.selectedItem.toString()
+        val timeOption = when {
+            selectedTimeText.contains("30") -> "easy"
+            selectedTimeText.contains("20") -> "medium"
+            selectedTimeText.contains("10") -> "hard"
+            else -> "medium"
+        }
+
         val systemPrompt = if (selectedLanguage == "Filipino") {
             """
-    Ikaw ay isang AI quiz generator. Gumawa ng eksaktong $aiCount multiple-choice na tanong mula sa pangunahing salita at mahahalagang konsepto ng teksto.
-    Bawat tanong AY DAPAT may paksa. Huwag bawasan ang bilang; kailangan eksaktong $aiCount tanong.
-    Gamitin ang eksaktong format na ito at huwag palitan:
-
-    Tanong:
-    A.
-    B.
-    C.
-    D.
-    Sagot:
-    Ibigay lahat ng $aiCount tanong, kahit may katulad na paksa.
-    """.trimIndent()
+        Ikaw ay isang AI quiz generator. Gumawa ng eksaktong $count multiple-choice na tanong mula sa pangunahing salita at mahahalagang konsepto ng teksto.
+        Bawat tanong AY DAPAT may paksa.
+        Gamitin ang eksaktong format na ito:
+        
+        Tanong: <question text>
+        A. <choice1>
+        B. <choice2>
+        C. <choice3>
+        D. <choice4>
+        Sagot: <tamang letra A-D>
+        """.trimIndent()
         } else {
             """
-    You are an AI quiz generator. Generate exactly $aiCount multiple-choice questions based on the main keywords and key concepts.
-    Each question MUST include a topic. Do NOT reduce the number; you must return exactly $aiCount questions.
-    Use this exact format and do not change it:
-
-    Question:
-    A.
-    B.
-    C.
-    D.
-    Answer:
-    Provide all $aiCount questions, even if some topics are similar.
-    """.trimIndent()
+        You are an AI quiz generator. Generate exactly $count multiple-choice questions based on main keywords and key concepts.
+        Each question MUST include a topic.
+        Use this exact format:
+        
+        Question: <question text>
+        A. <choice1>
+        B. <choice2>
+        C. <choice3>
+        D. <choice4>
+        Answer: <correct letter A-D>
+        """.trimIndent()
         }
 
         val userPrompt = if (selectedLanguage == "Filipino") {
-            "Gumawa ng $aiCount tanong mula sa pangunahing salita at mahahalagang konsepto ng tekstong ito:\n\n$shortenedText\n\nSundin ang format."
+            "Gumawa ng $count tanong mula sa pangunahing salita at mahahalagang konsepto ng tekstong ito:\n\n$shortenedText\n\nSundin ang format."
         } else {
-            "Generate $aiCount questions from the main keywords and key concepts of this text:\n\n$shortenedText\n\nFollow the format exactly."
+            "Generate $count questions from the main keywords and key concepts of this text:\n\n$shortenedText\n\nFollow the format exactly."
         }
 
         val request = ChatRequest(
@@ -943,104 +968,61 @@ class   OCRActivity : AppCompatActivity() {
             )
         )
 
-// --- Step 2: Get current user ---
-        val user = FirebaseAuth.getInstance().currentUser
-        if (user == null) {
-            Toast.makeText(this, "User not logged in.", Toast.LENGTH_SHORT).show()
-            return
-        }
+        sendChatRequest(request) { reply ->
+            Log.d("QuizAIReply", reply)
 
-// --- Step 3: Get selected time option ---
-        val selectedTimeText = spinnerTimePerQuestion.selectedItem.toString()
-        val timeOption = when {
-            selectedTimeText.contains("30") -> "easy"
-            selectedTimeText.contains("20") -> "medium"
-            selectedTimeText.contains("10") -> "hard"
-            else -> "medium"
-        }
+            val cleanedReply = reply.replace("**", "")
+                .replace("#", "")
+                .replace(Regex("\\n{3,}"), "\n\n")
 
-// --- Step 4: Fetch used questions ---
-        Firebase.firestore.collection("users")
-            .document(user.uid)
-            .collection("used_questions")
-            .get()
-            .addOnSuccessListener { snapshot ->
-                val usedQuestions = snapshot.documents.map { doc ->
-                    doc.getString("question") ?: ""
-                }.toSet()
+            // Parse all questions
+            val questions = QuizUtils.parseQuizQuestions(cleanedReply).take(count)
 
-                // --- Step 5: Send request to AI ---
-                sendChatRequest(request) { reply ->
-                    val questions: List<QuizQuestion> = QuizUtils.parseQuizQuestions(reply)
-
-                    if (questions.isNotEmpty()) {
-                        val newQuestions = questions.filter { it.question !in usedQuestions }
-                        val reusedQuestions = questions.filter { it.question in usedQuestions }
-
-                        val finalQuestions = mutableListOf<QuizQuestion>()
-                        finalQuestions.addAll(newQuestions.take(count))
-                        if (finalQuestions.size < count) {
-                            finalQuestions.addAll(reusedQuestions.take(count - finalQuestions.size))
-                        }
-
-                        if (finalQuestions.isEmpty()) {
-                            Toast.makeText(this, "No quiz questions could be generated.", Toast.LENGTH_LONG).show()
-                            progressBar.visibility = View.GONE
-                            btnSummarize.isEnabled = true
-                            return@sendChatRequest
-                        }
-
-                        // --- Step 6: Save new questions as used ---
-                        val batch = Firebase.firestore.batch()
-                        finalQuestions.filter { it.question !in usedQuestions }.forEach { q ->
-                            val docRef = Firebase.firestore.collection("users")
-                                .document(user.uid)
-                                .collection("used_questions")
-                                .document(q.question.hashCode().toString())
-                            batch.set(docRef, mapOf("question" to q.question))
-                        }
-                        batch.commit()
-
-                        // --- Step 7: Save study history ---
-                        val history = StudyHistory(
-                            uid = user.uid,
-                            type = "quiz",
-                            inputText = text,
-                            resultText = reply,
-                            timestamp = System.currentTimeMillis(),
-                            quiz = ArrayList(finalQuestions)
-                        )
-                        Firebase.firestore.collection("study_history")
-                            .add(history)
-                            .addOnSuccessListener { Log.d("SaveHistory", "Quiz saved with full data") }
-                            .addOnFailureListener { e -> Log.e("SaveHistory", "Failed to save quiz", e) }
-
-                        // --- Step 8: Launch QuizViewerActivity with timeOption ---
-                        val intent = Intent(this, QuizViewerActivity::class.java)
-                        intent.putParcelableArrayListExtra("quizQuestions", ArrayList(finalQuestions))
-                        intent.putExtra("timestamp", history.timestamp)
-                        intent.putExtra("readOnly", false)
-                        intent.putExtra("quizCount", count)
-                        intent.putExtra("timePerQuestion", timeOption)
-                        startActivity(intent)
-
-                    } else {
-                        txtSummary.text = reply
-                        Toast.makeText(this, "No quiz questions generated.", Toast.LENGTH_LONG).show()
-                    }
-
-                    progressBar.visibility = View.GONE
-                    btnSummarize.isEnabled = true
-                }
-
-            }
-            .addOnFailureListener {
-                Toast.makeText(this, "Failed to fetch used questions.", Toast.LENGTH_SHORT).show()
+            if (questions.isEmpty()) {
+                Toast.makeText(this, "No quiz questions could be generated.", Toast.LENGTH_LONG).show()
                 progressBar.visibility = View.GONE
                 btnSummarize.isEnabled = true
+                return@sendChatRequest
             }
 
+            // Save used questions
+            val batch = Firebase.firestore.batch()
+            questions.filter { !it.question.startsWith("Option") }.forEach { q ->
+                val docRef = Firebase.firestore.collection("users")
+                    .document(user.uid)
+                    .collection("used_questions")
+                    .document(q.question.hashCode().toString())
+                batch.set(docRef, mapOf("question" to q.question))
+            }
+            batch.commit()
+
+            // Save history
+            val history = StudyHistory(
+                uid = user.uid,
+                type = "quiz",
+                inputText = text,
+                resultText = cleanedReply,
+                timestamp = System.currentTimeMillis(),
+                quiz = ArrayList(questions)
+            )
+            Firebase.firestore.collection("study_history").add(history)
+
+            // Launch QuizViewer
+            val intent = Intent(this, QuizViewerActivity::class.java)
+            intent.putParcelableArrayListExtra("quizQuestions", ArrayList(questions))
+            intent.putExtra("timestamp", history.timestamp)
+            intent.putExtra("readOnly", false)
+            intent.putExtra("quizCount", count)
+            intent.putExtra("timePerQuestion", timeOption)
+            startActivity(intent)
+
+            progressBar.visibility = View.GONE
+            btnSummarize.isEnabled = true
+        }
     }
+
+
+
 
 
 

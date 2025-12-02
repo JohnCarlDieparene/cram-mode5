@@ -3,15 +3,17 @@ package com.labactivity.crammode
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.DecelerateInterpolator
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 
 class FlashcardAdapter(
     private val flashcards: List<Flashcard>,
-    private val onSideChange: ((isBack: Boolean) -> Unit)? = null
+    private val onSideChange: ((position: Int, isBack: Boolean) -> Unit)? = null
 ) : RecyclerView.Adapter<FlashcardAdapter.ViewHolder>() {
+
+    // Track each card's front/back state
+    private val isBackVisible = BooleanArray(flashcards.size) { false }
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val cardFront: CardView = view.findViewById(R.id.cardFront)
@@ -21,7 +23,7 @@ class FlashcardAdapter(
         private var isFront = true
 
         init {
-            val flipListener = View.OnClickListener { flipCard() }
+            val flipListener = View.OnClickListener { flipCard(adapterPosition) }
             cardFront.setOnClickListener(flipListener)
             cardBack.setOnClickListener(flipListener)
             questionText.setOnClickListener(flipListener)
@@ -32,20 +34,22 @@ class FlashcardAdapter(
             questionText.text = "Q: ${flashcard.question}"
             answerText.text = "A: ${flashcard.answer}"
 
-            cardFront.visibility = View.VISIBLE
-            cardBack.visibility = View.GONE
-            isFront = true
+            // Restore correct side for recycled ViewHolder
+            isFront = !isBackVisible[adapterPosition]
+            cardFront.visibility = if (isFront) View.VISIBLE else View.GONE
+            cardBack.visibility = if (isFront) View.GONE else View.VISIBLE
             cardFront.rotationY = 0f
             cardBack.rotationY = 0f
 
-            onSideChange?.invoke(false) // Front side initially
+            // Notify Activity about current side
+            onSideChange?.invoke(adapterPosition, !isFront)
         }
 
         fun revealAnswer() {
-            if (isFront) flipCard() // Flip only if front
+            if (isFront) flipCard(adapterPosition)
         }
 
-        private fun flipCard() {
+        private fun flipCard(position: Int) {
             val scale = cardFront.context.resources.displayMetrics.density
             cardFront.cameraDistance = 8000 * scale
             cardBack.cameraDistance = 8000 * scale
@@ -65,7 +69,8 @@ class FlashcardAdapter(
                         .setDuration(200)
                         .withEndAction {
                             isFront = !isFront
-                            onSideChange?.invoke(!isFront) // Notify activity which side is visible
+                            isBackVisible[position] = !isFront
+                            onSideChange?.invoke(position, !isFront)
                         }.start()
                 }.start()
         }
@@ -74,8 +79,15 @@ class FlashcardAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_flashcard, parent, false))
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.bind(flashcards[position])
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) =
+        holder.bind(flashcards[position])
 
     override fun getItemCount() = flashcards.size
+
     fun getFlashcard(position: Int) = flashcards[position]
+
+    fun isBackVisibleAt(position: Int): Boolean {
+        return isBackVisible.getOrNull(position) ?: false
+    }
+
 }
